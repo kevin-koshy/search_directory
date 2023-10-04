@@ -31,8 +31,11 @@ fn search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String> {
     for file in files {
         if file.ends_with(file_to_search) {
             results.push(file.into_os_string().into_string().unwrap())  ;
+            println!("Found {} in {}", file_to_search, directory);
         }
-        }
-    println!("{:?}", results);
+    }
+    if results.is_empty() {
+        println!("Could not find {} in {}", file_to_search, directory);
+    }
     results
 }
