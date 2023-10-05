@@ -49,12 +49,6 @@ fn recursive_search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String>
                 println!("Found {} in {}", file_to_search, directory);
                 break;
             }
-            // let search_results = search(file_to_search, &path.display().to_string());
-            // if !search_results.is_empty() {
-            //     results = search_results;
-            //      println!("Found¸ {} in {}", file_to_search, directory);
-            //     break;
-            // }
         }
         else {
             if path.ends_with(file_to_search) {
@@ -64,6 +58,6 @@ fn recursive_search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String>
             }
         }
     }
-    // println!("{:?}", results);
+
     results
 }
