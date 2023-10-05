@@ -20,7 +20,6 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     recursive_search(&config.file_name,&config.dir.as_str());
-
     Ok(())
      }
 
@@ -31,11 +30,9 @@ fn search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String> {
     for file in files {
         if file.ends_with(file_to_search) {
             results.push(file.into_os_string().into_string().unwrap())  ;
-            println!("Found {} in {}", file_to_search, directory);
-        }
+                }
     }
     if results.is_empty() {
-        println!("Could not find {} in {}", file_to_search, directory);
     }
     results
 }
@@ -46,13 +43,18 @@ fn recursive_search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String>
     println!("Recursively searching for {} in {}", file_to_search, directory);
     for path in files {
         if path.is_dir() {
-            println!("{} is a directory", path.display());
-            let search_results = search(file_to_search, &path.display().to_string());
-            if !search_results.is_empty() {
-                results = search_results;
-                 println!("Found {} in {}", file_to_search, directory);
+            let mut rec_search_results = recursive_search(file_to_search, &path.display().to_string());
+            if !results.is_empty() {
+                results = rec_search_results;
+                println!("Found {} in {}", file_to_search, directory);
                 break;
             }
+            // let search_results = search(file_to_search, &path.display().to_string());
+            // if !search_results.is_empty() {
+            //     results = search_results;
+            //      println!("Found¸ {} in {}", file_to_search, directory);
+            //     break;
+            // }
         }
         else {
             if path.ends_with(file_to_search) {
@@ -62,6 +64,6 @@ fn recursive_search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String>
             }
         }
     }
-    println!("{:?}", results);
+    // println!("{:?}", results);
     results
 }
