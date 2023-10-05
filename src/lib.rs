@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs;
 
-#[derive(Debug, Clone)]
+
 pub struct Config{
     pub dir: String,
     pub file_name: String,
@@ -19,10 +19,10 @@ impl Config {
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    search(&config.file_name,&config.dir.as_str());
+    recursive_search(&config.file_name,&config.dir.as_str());
 
     Ok(())
-}
+     }
 
 fn search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String> {
     let files = fs::read_dir(directory).unwrap().filter_map(|e|e.ok()).map(|e|e.path()).collect::<Vec<_>>();
@@ -37,5 +37,31 @@ fn search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String> {
     if results.is_empty() {
         println!("Could not find {} in {}", file_to_search, directory);
     }
+    results
+}
+
+fn recursive_search<'a>(file_to_search:&str,  directory:&'a str) -> Vec< String> {
+    let files = fs::read_dir(directory).unwrap().filter_map(|e|e.ok()).map(|e|e.path()).collect::<Vec<_>>();
+    let mut results:Vec<String> = Vec::new();
+    println!("Recursively searching for {} in {}", file_to_search, directory);
+    for path in files {
+        if path.is_dir() {
+            println!("{} is a directory", path.display());
+            let search_results = search(file_to_search, &path.display().to_string());
+            if !search_results.is_empty() {
+                results = search_results;
+                 println!("Found {} in {}", file_to_search, directory);
+                break;
+            }
+        }
+        else {
+            if path.ends_with(file_to_search) {
+                results.push(path.into_os_string().into_string().unwrap());
+                println!("Found {} in {}", file_to_search, directory);
+                break;
+            }
+        }
+    }
+    println!("{:?}", results);
     results
 }
